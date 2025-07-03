@@ -1,3 +1,105 @@
+# User Registration Endpoint Documentation
+
+## POST `/user/register`
+
+### Description
+Registers a new user in the system. This endpoint validates the input, hashes the password, creates a new user, and returns a JWT token along with the user data.
+
+---
+
+### Request Body
+
+Send a JSON object with the following structure:
+
+```json
+{
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "email": "john.doe@example.com",
+  "password": "yourpassword"
+}
+```
+
+#### Field Requirements
+
+- `fullname.firstname` (string, required): Minimum 3 characters.
+- `fullname.lastname` (string, optional): Minimum 3 characters if provided.
+- `email` (string, required): Must be a valid email address.
+- `password` (string, required): Minimum 6 characters.
+
+---
+
+### Responses
+
+#### Success
+
+- **Status Code:** `201 Created`
+- **Body:**
+    ```json
+    {
+      "token": "<jwt_token>",
+      "user": {
+        "_id": "user_id",
+        "fullname": {
+          "firstname": "John",
+          "lastname": "Doe"
+        },
+        "email": "john.doe@example.com",
+        "socketId": null,
+        "__v": 0
+      }
+    }
+    ```
+
+#### Validation Error
+
+- **Status Code:** `400 Bad Request`
+- **Body:**
+    ```json
+    {
+      "errors": [
+        {
+          "msg": "Invalid Email",
+          "param": "email",
+          "location": "body"
+        },
+        {
+          "msg": "First name must be at least 3 characters long",
+          "param": "fullname.firstname",
+          "location": "body"
+        },
+        {
+          "msg": "Password must be at least 6 characters long",
+          "param": "password",
+          "location": "body"
+        }
+      ]
+    }
+    ```
+
+---
+
+### Example Request
+
+```bash
+curl -X POST http://localhost:4000/user/register \
+-H "Content-Type: application/json" \
+-d '{
+  "fullname": { "firstname": "John", "lastname": "Doe" },
+  "email": "john.doe@example.com",
+  "password": "yourpassword"
+}'
+```
+
+---
+
+### Notes
+
+- All fields are required except `lastname`.
+- On success, a JWT token is returned for authentication
+
 # User Routes API Documentation
 
 This document describes the endpoints available in `UserRoutes.js` for user authentication and profile management.
